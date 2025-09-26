@@ -58,7 +58,11 @@ class MyApp(QMainWindow):
             try:
                 self.serial_conn = serial.Serial(port, 115200, timeout=1)
                 self.serial_conn.write(b'SCALA_ACTIVATE\n')  # Gửi lệnh thử
-                self.add_log_entry(f"Kết nối thành công tới {port}")
+                response = self.serial_conn.readline().decode().strip()
+                if response == "SCALA_OK":
+                    self.add_log_entry(f"Kết nối thành công và nhận được phản hồi từ {port}")
+                else:
+                    self.add_log_entry(f"Kết nối thất bại hoặc phản hồi không đúng từ {port}")
             except serial.SerialException as e:
                 self.add_log_entry(f"Lỗi kết nối: {e}")
         else:
